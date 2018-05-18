@@ -1,4 +1,4 @@
-# variant with base access
+# variant with base class access
 
 [Live](http://coliru.stacked-crooked.com/a/a93c75c3217d5657)
 
