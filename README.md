@@ -1,7 +1,8 @@
 # variant with base access
-c++ variant with direct base class access.
 
+[Live](http://coliru.stacked-crooked.com/a/a93c75c3217d5657)
 
+`std::variant` does not allow you to access base class directly:
 ```c++
     struct Base{
         int pos;
@@ -31,3 +32,7 @@ With `variant_w_base` you can access base class almost as no-op.
 ```
 
 Interface similliar to `std::variant`, so it should be drop-in replacement.
+
+# Performance
+
+performance-wise `variant_w_base`'s base class access 5-10 times faster than with `std::visit`. See `test.h`.
