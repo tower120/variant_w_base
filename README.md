@@ -33,8 +33,10 @@ With `variant_w_base` you can access base class almost as no-op.
 
 Interface similliar to `std::variant`, so it should be drop-in replacement.
 
+Basically, `variant_w_base` is just a wrapper around `std::variant`, which stores updatable pointer to base class.
+
 # Performance
 
-performance-wise `variant_w_base`'s base class access 5-10 times faster than with `std::visit`. See `test.h`.
+Performance-wise `variant_w_base`'s base class access 5-10 times faster than with `std::visit`. See `test.h`.
 
 [More](https://tower120.github.io/2018/05/18/variant_with_base.html)
