@@ -36,3 +36,5 @@ Interface similliar to `std::variant`, so it should be drop-in replacement.
 # Performance
 
 performance-wise `variant_w_base`'s base class access 5-10 times faster than with `std::visit`. See `test.h`.
+
+[More](https://tower120.github.io/2018/05/18/variant_with_base.html)
