@@ -5,7 +5,7 @@
 #include "variant_w_base.h"
 #include <experimental/random>
 
-namespace test_variant_w_base{
+namespace benchmark{
 
     template<class TimeUnit = std::chrono::milliseconds, class Closure>
     static auto measure(Closure&& closure){
@@ -113,24 +113,7 @@ namespace test_variant_w_base{
         std::cout << found_element << " " << t << std::endl;
     }
 
-
-
-    void simple_test(){
-        using namespace tower120::utils;
-
-        variant_w_base<Base, std::variant<A, B>> v = B();
-
-        std::visit([](auto& arg){
-            using Arg = std::decay_t< decltype(arg) >;
-            if constexpr (std::is_same_v<Arg, A>){
-                std::cout << arg.a;
-            } else if constexpr (std::is_same_v<Arg, B>){
-                std::cout << arg.b;
-            }
-        }, v);
-    }
-
-    void test(){
+    void start(){
         const int count   = 100'000;
         const int repeats = 100;
         performance_test_variant(count, repeats);

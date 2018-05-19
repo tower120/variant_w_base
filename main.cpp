@@ -1,7 +1,9 @@
 #include <iostream>
-#include "test.h"
+#include "samples.h"
+#include "benchmark.h"
 
 int main() {
-    test_variant_w_base::test();
+    samples::start();
+    benchmark::start();
     return 0;
 }
