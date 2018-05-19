@@ -10,7 +10,7 @@ namespace samples{
         using namespace tower120::utils;
 
         struct Base{
-            int pos;
+            int pos = 1;
         };
         struct A : Base{
             int a = 10;
@@ -21,14 +21,18 @@ namespace samples{
 
         variant_w_base<Base, std::variant<std::monostate, A, B>> v = B();
 
-        std::visit([](auto& arg){
+        const auto& cv = v;
+        const Base& base = cv.get<Base>();
+        std::cout << base.pos << std::endl;
+
+        v.visit([](auto& arg){
             using Arg = std::decay_t< decltype(arg) >;
             if constexpr (std::is_same_v<Arg, A>){
                 std::cout << arg.a << std::endl;
             } else if constexpr (std::is_same_v<Arg, B>){
                 std::cout << arg.b << std::endl;
             }
-        }, v);
+        });
     }
 
 

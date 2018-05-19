@@ -9,20 +9,13 @@ namespace tower120::utils{
     class variant_w_base{
         using Self = variant_w_base<Base, Variant>;
 
-        template<class Visitor, class Base_, class Variant_>
-        friend constexpr decltype(auto) std::visit(Visitor&&, variant_w_base<Base_, Variant_>&);
-
-        template<class T, class Base_, class Variant_>
-        friend constexpr decltype(auto) std::get(variant_w_base<Base_, Variant_>&);
-
-        template<std::size_t I, class Base_, class Variant_>
-        friend constexpr decltype(auto) std::get(variant_w_base<Base_, Variant_>&);
-
+        auto& self_mut() const {
+            return *const_cast<Self*>(this);
+        }
 
         Base* m_base;
         Variant m_variant;
 
-        // TODO: add case for known class std::get
         void update_base(){
             m_base = std::visit([](auto&& arg) -> Base* {
                 using Arg = std::decay_t<decltype(arg)>;
@@ -32,6 +25,16 @@ namespace tower120::utils{
                     return static_cast<Base*>(&arg);
                 }
             }, m_variant);
+        }
+        template<class T>
+        void update_base(){
+            using Arg = std::decay_t<T>;
+            if constexpr (std::is_same_v<Arg, std::monostate>){
+                m_base = nullptr;
+            } else {
+                m_base = std::get_if<Arg>(&m_variant);
+                assert(m_base);
+            }
         }
 
         template<class T>
@@ -55,7 +58,7 @@ namespace tower120::utils{
         variant_w_base(T&& value)
             : m_variant(std::forward<T>(value))
         {
-            update_base();
+            update_base<T>();
         }
         variant_w_base(const Variant& var)
             : m_variant(var)
@@ -83,7 +86,7 @@ namespace tower120::utils{
         template<class T, typename = is_not_self<T>>
         variant_w_base& operator=(T&& value){
             m_variant = std::forward<T>(value);
-            update_base();
+            update_base<T>();
             return *this;
         }
         variant_w_base& operator=(const Variant& var){
@@ -106,6 +109,67 @@ namespace tower120::utils{
         }
 
 
+        // free functions from std::variant
+        template<class T>
+        constexpr T* get_if() {
+            if constexpr (std::is_same_v<T, Base>){
+                return base();
+            } else {
+                return std::get_if<T>(variant());
+            }
+        }
+        template<class T>
+        constexpr const T* get_if() const {
+            return self_mut().template get<T>();
+        }
+
+
+        template<std::size_t I>
+        constexpr decltype(auto) get_if() {
+            return std::get_if<I>(variant());
+        }
+        template<std::size_t I>
+        constexpr decltype(auto) get_if() const {
+            return std::get_if<I>(variant());
+        }
+
+        template<class T>
+        constexpr T& get(){
+            if constexpr (std::is_same_v<T, Base>){
+                if (base() == nullptr){
+                    throw std::bad_variant_access();
+                }
+                return *base();
+            } else {
+                return std::get<T>(variant());
+            }
+        }
+        template<class T>
+        constexpr const T& get() const {
+            return self_mut().template get<T>();
+        }
+
+
+        template<std::size_t I>
+        constexpr decltype(auto) get(){
+            return std::get<I>(variant());
+        }
+        template<std::size_t I>
+        constexpr decltype(auto) get() const {
+            return std::get<I>(variant());
+        }
+
+
+
+        template<class Visitor>
+        constexpr decltype(auto) visit(Visitor&& vis){
+            return std::visit(std::forward<Visitor>(vis), variant());
+        }
+        template<class Visitor>
+        constexpr decltype(auto) visit(Visitor&& vis) const {
+            return std::visit(std::forward<Visitor>(vis), variant());
+        }
+
         Base* base(){
             return m_base;
         }
@@ -123,33 +187,4 @@ namespace tower120::utils{
         }
     };
 
-
-}
-
-namespace std{
-
-    template<class Visitor, class Base, class Variant>
-    constexpr decltype(auto) visit(Visitor&& vis, tower120::utils::variant_w_base<Base, Variant>& var){
-        return std::visit(std::forward<Visitor>(vis), var.variant());
-    }
-
-    template<class T, class Base, class Variant>
-    constexpr decltype(auto) get(tower120::utils::variant_w_base<Base, Variant>& var){
-        if constexpr (std::is_same_v<T, Base>){
-            if (var.base() == nullptr){
-                throw std::bad_variant_access();
-            }
-            //assert(var.base() != nullptr);
-            return *var.base();
-        } else {
-            return std::get<T>(var.variant());
-        }
-    }
-
-    template<std::size_t I, class Base, class Variant>
-    constexpr decltype(auto) get(tower120::utils::variant_w_base<Base, Variant>& var){
-        return std::get<I>(var.variant());
-    }
-
-    // TODO: get_if, swap
 }

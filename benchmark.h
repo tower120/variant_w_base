@@ -91,9 +91,9 @@ namespace benchmark{
         std::vector<Element> vec;
         for(int i=0;i<count;++i){
             Element& element = vec.emplace_back(get_random_variant());
-            std::visit([i](Base& base){
+            element.visit([i](Base& base){
                 base.pos = i;
-            }, element);
+            });
         }
 
         Element *found_element = nullptr;

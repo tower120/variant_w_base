@@ -28,7 +28,7 @@ With `variant_w_base` you can access base class almost as no-op.
 ```c++
     variant_w_base<Base, std::variant<A,B>> var;
     Base& base = *var.base();
-    Base& base = std::get<Base>(var);
+    Base& base = var.get<Base>();
 ```
 
 Interface similliar to `std::variant`, so it should be drop-in replacement.
