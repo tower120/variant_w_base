@@ -24,9 +24,9 @@ namespace samples{
         std::visit([](auto& arg){
             using Arg = std::decay_t< decltype(arg) >;
             if constexpr (std::is_same_v<Arg, A>){
-                std::cout << arg.a;
+                std::cout << arg.a << std::endl;
             } else if constexpr (std::is_same_v<Arg, B>){
-                std::cout << arg.b;
+                std::cout << arg.b << std::endl;
             }
         }, v);
     }
@@ -51,11 +51,11 @@ namespace samples{
 
         variant_w_base<Base, std::variant<std::monostate, A, B>> v = B();
 
-        std::cout << v.base()->get();
+        std::cout << v.base()->get() << std::endl;
     }
 
     void start(){
-        simple_ussage();
+        simple_usage();
         local_vclass_storage();
     }
 }
