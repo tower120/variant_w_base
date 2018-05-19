@@ -31,7 +31,7 @@ With `variant_w_base` you can access base class almost as no-op.
     Base& base = var.get<Base>();
 ```
 
-Interface similliar to `std::variant`, so it should be drop-in replacement.
+Interface similar to `std::variant`, but all functions are members.
 
 Basically, `variant_w_base` is just a wrapper around `std::variant`, which stores updatable pointer to base class.
 
