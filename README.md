@@ -35,6 +35,22 @@ Interface similliar to `std::variant`, so it should be drop-in replacement.
 
 Basically, `variant_w_base` is just a wrapper around `std::variant`, which stores updatable pointer to base class.
 
+You could also use it as local virtual class storage:
+```c++
+    struct Base{
+        virtual int get() = 0;
+    };
+    struct A : Base{
+        virtual int get() override { return 1; }
+    };
+    struct B : Base{
+        virtual int get() override { return 2; }
+    };
+
+    variant_w_base<Base, std::variant<std::monostate, A, B>> v = B();
+    std::cout << v.base()->get();
+```
+
 # Performance
 
 Performance-wise `variant_w_base`'s base class access 5-10 times faster than with `std::visit`. See `test.h`.
