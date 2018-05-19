@@ -22,14 +22,15 @@ namespace tower120::utils{
         Base* m_base;
         Variant m_variant;
 
+        // TODO: add case for known class std::get
         void update_base(){
             m_base = std::visit([](auto&& arg) -> Base* {
                 using Arg = std::decay_t<decltype(arg)>;
                 if constexpr (std::is_same_v<Arg, std::monostate>){
                     return nullptr;
+                } else {
+                    return static_cast<Base*>(&arg);
                 }
-
-                return static_cast<Base*>(&arg);
             }, m_variant);
         }
 
