@@ -56,12 +56,6 @@ namespace tower120::utils{
         {
             update_base();
         }
-        template<class T, typename = is_not_self<T>>
-        variant_w_base(T&& value)
-            : m_variant(std::forward<T>(value))
-        {
-            update_base<T>();
-        }
         variant_w_base(const Variant& var)
             : m_variant(var)
         {
@@ -72,7 +66,18 @@ namespace tower120::utils{
         {
             update_base();
         }
-
+        template<class T, typename = is_not_self<T>>
+        variant_w_base(T&& value)
+            : m_variant(std::forward<T>(value))
+        {
+            update_base<T>();
+        }
+        template<class T, class ...Args>
+        explicit variant_w_base(std::in_place_type_t<T>, Args&&... args)
+            : m_variant(std::in_place_type_t<T>(), std::forward<Args>(args)...)
+        {
+            update_base<T>();
+        }
 
         variant_w_base& operator=(const variant_w_base& other){
             m_variant = other.m_variant;

@@ -142,8 +142,8 @@ namespace benchmark{
     }
 
     void start(){
-        const int count   = 1000'000;
-        const int repeats = 100;
+        const int count   = 100'000;
+        const int repeats = 1000;
         performance_test_variant(count, repeats);
         performance_test_variant_w_base(count, repeats);
         performance_test_direct(count, repeats);
