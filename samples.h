@@ -22,7 +22,7 @@ namespace samples{
         variant_w_base<Base, std::variant<std::monostate, A, B>> v = B();
 
         const auto& cv = v;
-        const Base& base = cv.get<Base>();
+        const Base& base = cv;
         std::cout << base.pos << std::endl;
 
         v.visit([](auto& arg){
@@ -33,6 +33,8 @@ namespace samples{
                 std::cout << arg.b << std::endl;
             }
         });
+
+        std::cout << v->pos << std::endl;
     }
 
 

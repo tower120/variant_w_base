@@ -2,6 +2,8 @@
 
 #include <variant>
 #include <cassert>
+#include <tuple>
+#include <type_traits>
 
 namespace tower120::utils{
 
@@ -100,7 +102,6 @@ namespace tower120::utils{
             return *this;
         }
 
-
         constexpr bool operator==(const variant_w_base& other) const {
             return m_variant == other.m_variant;
         }
@@ -159,8 +160,6 @@ namespace tower120::utils{
             return std::get<I>(variant());
         }
 
-
-
         template<class Visitor>
         constexpr decltype(auto) visit(Visitor&& vis){
             return std::visit(std::forward<Visitor>(vis), variant());
@@ -170,19 +169,37 @@ namespace tower120::utils{
             return std::visit(std::forward<Visitor>(vis), variant());
         }
 
-        Base* base(){
+        Base* base() noexcept{
             return m_base;
         }
-        const Base* base() const {
+        const Base* base() const noexcept{
+            return m_base;
+        }
+        operator Base&() noexcept{
+            return *m_base;
+        }
+        operator const Base&() const noexcept{
+            return *m_base;
+        }
+        Base* operator->() noexcept{
+            return m_base;
+        }
+        const Base* operator->() const noexcept{
+            return m_base;
+        }
+        Base& operator*() noexcept{
+            return m_base;
+        }
+        const Base& operator*() const noexcept{
             return m_base;
         }
 
-        const Variant& variant() const{
+        constexpr const Variant& variant() const noexcept{
             return m_variant;
         }
     private:
         // hide, to keep variant type change tracked.
-        Variant& variant(){
+        constexpr Variant& variant() noexcept {
             return m_variant;
         }
     };
