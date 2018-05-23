@@ -113,10 +113,39 @@ namespace benchmark{
         std::cout << found_element << " " << t << std::endl;
     }
 
+
+    void performance_test_direct(int count = 100'000, int repeats = 100){
+        using namespace tower120::utils;
+
+        using Element = Base;
+        std::vector<Element> vec;
+        for(int i=0;i<count;++i){
+            Element& base = vec.emplace_back();
+            base.pos = i;
+        }
+
+        Element *found_element = nullptr;
+        auto t = benchmark(repeats, [&]() {
+            //const int rnd = std::experimental::randint(0, count);
+            const int rnd = count-1;
+            for (Element &element: vec) {
+                const bool found = element.pos == rnd;
+
+                if (found) {
+                    found_element = &element;
+                    break;
+                }
+            }
+        });
+
+        std::cout << found_element << " " << t << std::endl;
+    }
+
     void start(){
-        const int count   = 100'000;
+        const int count   = 1000'000;
         const int repeats = 100;
         performance_test_variant(count, repeats);
         performance_test_variant_w_base(count, repeats);
+        performance_test_direct(count, repeats);
     }
 }
